@@ -12,6 +12,13 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 
+# Fix for flaw 3 part 1:
+# -----------------------
+# import environ
+# env = environ.Env()
+# environ.Env.read_env()
+# -----------------------
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -19,14 +26,30 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
+# Flaw 3:
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-ujzkaa9^vg64u!93na1_#_+dok7de!uuq-cy5o4np%)xfbkywt'
 
+# Fix for flaw 3 part 2:
+# SECRET_KEY = env(‘SECRET_KEY’)
+
+
+
+# Flaw 5: DEBUG is set to True
+# -----------------------
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# -----------------------
+# Fix for flaw 5:
+# DEBUG = False
+
+# ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+
+# if you get Bad Request when DEBUG = False, try using ALLOWED_HOSTS = ['*']
+# -----------------------
 
 # Application definition
 
@@ -88,19 +111,23 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
+# Flaw 4: Allowing user creation with too weak passwords
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {'min_length': 8}
     },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    
+    # Fix for flaw 4: add more criteria for password validation
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    # },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    # },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    # },
 ]
 
 

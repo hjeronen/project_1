@@ -24,7 +24,11 @@
 		{% for msg in msgs %}
 
 		<i>From {{msg.source.username}} to {{msg.target.username}}</i></br>
-		{{msg.content|safe}}
+        {{msg.content}}
+        <form action='delete/{{ msg.id }}' method="POST">
+			{% csrf_token %}
+            <input type="submit" value="Delete"/>
+        </form>
 		</br>
 		</br>
 
@@ -42,7 +46,7 @@
             {% endfor %}
             </select><br/>
 
-			<textarea name="content" cols="40" rows="5"></textarea><br/>
+			<textarea name="content" cols="40" rows="5" maxlength="200"></textarea><br/>
             <input type="submit" value="Send"/>
         </form>
     </body>
