@@ -15,13 +15,15 @@ from pathlib import Path
 # Fix for flaw 3 part 1:
 # -----------------------
 # import environ
+# import os
 # env = environ.Env()
-# environ.Env.read_env()
 # -----------------------
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Fix for flaw 3 part 2:
+# environ.Env.read_env(os.path.join(BASE_DIR, 'project_1/.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -30,8 +32,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-ujzkaa9^vg64u!93na1_#_+dok7de!uuq-cy5o4np%)xfbkywt'
 
-# Fix for flaw 3 part 2:
-# SECRET_KEY = env(‘SECRET_KEY’)
+# Fix for flaw 3 part 3:
+# SECRET_KEY = env('SECRET_KEY')
 
 
 
