@@ -86,12 +86,21 @@ Django shows the error page because the application is run with the setting DEBU
 ---------
 
 Sources:
+
 [1] https://cybersecuritybase.mooc.fi/module-2.3/1-security#programming-exercise-cookie-heist
+
 [2] https://owasp.org/www-project-top-ten/
+
 [3] https://alicecampkin.medium.com/how-to-set-up-environment-variables-in-django-f3c4db78c55f
+
 [4] https://www.educative.io/answers/how-to-generate-a-django-secretkey
+
 [5] https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository
+
 [6] https://docs.djangoproject.com/en/4.1/topics/auth/passwords/#module-django.contrib.auth.password_validation
+
 [7] https://www.linkedin.com/pulse/protecting-django-app-from-password-guessing-attacks-jerin-jose
+
 [8] https://django-ratelimit-backend.readthedocs.io/en/latest/
+
 [9] https://docs.djangoproject.com/en/4.1/ref/settings/#debug
