@@ -10,3 +10,6 @@ Requires installing Python 3 to run.
 
 ## Running locally
 After cloning the repository, go to the 'project_1' folder ('project_1' root, not repository root) where you should see the file 'manage.py'. You can start the application server by running the 'manage.py' file with python (command ```python manage.py runserver``` or ```python3 manage.py runserver``` depending on your OS). Once the server is started go to [http://127.0.0.1:8000/](http://127.0.0.1:8000/) in browser.
+
+## Report
+* [Project 1 report](https://github.com/hjeronen/project_1/blob/main/project_1_report.md)
