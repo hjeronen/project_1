@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
-  
+
+# code based on: https://ordinarycoders.com/blog/article/django-user-register-login-logout
 def registerView(request):
     if request.method == "POST":
         form = UserCreationForm(request.POST)

@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .models import Message
@@ -28,16 +27,22 @@ def sendView(request):
     conn = sqlite3.connect('db.sqlite3')
     cursor = conn.cursor()
 
-    cursor.executescript('INSERT INTO poster_message (content, time, source_id, target_id) VALUES (\'%s\', \'%s\', %s, %s)' % (content, time, source_id, target_id))
+    cursor.executescript('INSERT INTO poster_message '
+                        + '(content, time, source_id, target_id) '
+                        + 'VALUES (\'%s\', \'%s\', %s, %s)' 
+                        % (content, time, source_id, target_id))
 
     # Fix for flaw 2 option 1: use execute() that allows only one statement to be executed at a time, and a parameterized SQL statement
-    # cursor.execute('INSERT INTO poster_message (content, time, source_id, target_id) VALUES (:content, :time, :source_id, :target_id)', {'content': content, 'time': time, 'source_id': source_id, 'target_id': target_id})
+    # cursor.execute('INSERT INTO poster_message '
+    #                 + '(content, time, source_id, target_id) '
+    #                 + 'VALUES (:content, :time, :source_id, :target_id)', 
+    #                 {'content': content, 'time': time, 'source_id': source_id, 'target_id': target_id})
     
     conn.commit()
     conn.close()
 
     # -----------------------------------
-    # Fix for flaw 2 option 2: delete lines 28-37 and use models!
+    # Fix for flaw 2 option 2: delete lines 27-42 and use models!
     # Message.objects.create(source=source, target=target, content=content)
 
     return redirect('/')
@@ -49,8 +54,9 @@ def deleteView(request, message_id):
     # ---------------
     message.delete()
     # ---------------
-    # Flaw 1 Fix:
+    # Fix for flaw 1:
     # instead of directly deleting check that the user is the owner of the message
     # if (message.source == request.user or message.target == request.user):
     #     message.delete()
+    # ---------------
     return redirect('/')
