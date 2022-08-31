@@ -15,11 +15,12 @@ The flaw categories were picked from OWASP Top 10 list 2021. [2]
 FLAW 1: A01:2021 – Broken Access Control
 LINK: https://github.com/hjeronen/project_1/blob/150226d33492cb8b78e81461f1638a7da0995b85/project_1/poster/views.py#L53
 
-The application uses Django's authentication system (via login_required() decorator) to allow sending, viewing or deleting messages, but it does not specify who must be logged in. This leads to users having access to other user's messages, which they should not have.
+The application uses Django's authentication system (with login_required() decorator) to allow sending, viewing or deleting messages, but it does not specify who must be logged in. This leads to users having access to other user's messages, which they should not have.
 
 For example, the application allows users to delete their messages, and requires that the user is logged in to do so – however, it does not check that the logged in user is the owner of the message (either sender or receiver). Users should be able to delete only their own messages, but now anyone who is logged in can delete anyone else's messages by modifying the URL.
 
 HOW TO FIX:
+
 LINK TO FIX: https://github.com/hjeronen/project_1/blob/150226d33492cb8b78e81461f1638a7da0995b85/project_1/poster/views.py#L57
 
 The backend should check that the currently logged in user is the owner of the message before deleting it (here, either sender or receiver is the message's owner).
@@ -32,6 +33,7 @@ LINK: https://github.com/hjeronen/project_1/blob/150226d33492cb8b78e81461f1638a7
 When saving the user's message to the database, the message content is directly attached to the SQL-statement. This enables SQL injection attacks: it is possible to escape the current statement and write a new one that also gets executed. For example, by sending the message (without opening and closing quotes) "hacking your fancy app', '2022-08-17 13:13:27.106930', 2, 1); UPDATE auth_user SET is_superuser=1, is_staff=1 WHERE username='alice'; INSERT INTO poster_message VALUES (NULL, 'alice is the queen now!" alice can change her user role to admin (and flood admin's page with unnecessary messages). This way the attacker could also send messages using someone else's id number, delete the whole database, or wreak all kinds of havoc.
 
 HOW TO FIX:
+
 LINK TO FIX option 1: https://github.com/hjeronen/project_1/blob/150226d33492cb8b78e81461f1638a7da0995b85/project_1/poster/views.py#L35
 LINK TO FIX option 2: https://github.com/hjeronen/project_1/blob/150226d33492cb8b78e81461f1638a7da0995b85/project_1/poster/views.py#L45
 
@@ -45,6 +47,7 @@ LINK: https://github.com/hjeronen/project_1/blob/150226d33492cb8b78e81461f1638a7
 Django uses the variable SECRET_KEY for all cryptographic signing. It is defined in the project file 'settings.py', and currently publicly available in the project's GitHub repository. This should never happen with a real project, as attackers could use the SECRET_KEY for producing their own signed values.
 
 HOW TO FIX:
+
 LINK TO FIX part 1: https://github.com/hjeronen/project_1/blob/150226d33492cb8b78e81461f1638a7da0995b85/project_1/project_1/settings.py#L15
 LINK TO FIX part 2: https://github.com/hjeronen/project_1/blob/150226d33492cb8b78e81461f1638a7da0995b85/project_1/project_1/settings.py#L25
 LINK TO FIX part 3: https://github.com/hjeronen/project_1/blob/150226d33492cb8b78e81461f1638a7da0995b85/project_1/project_1/settings.py#L35
@@ -65,6 +68,7 @@ LINK: https://github.com/hjeronen/project_1/blob/150226d33492cb8b78e81461f1638a7
 There is a function for registering new users for the messaging application that uses Django's own user registration form, which has some built in safety features against for example injection attacks. However, there are not enough requirements for safe passwords, thus allowing registration with relatively weak passwords and making the application vulnerable for credential stuffing attacks. Also, the pre-existing credentials, for example 'admin:admin', are clearly not up to standard, and are causing a major risk for the application.
 
 HOW TO FIX:
+
 LINK TO FIX: https://github.com/hjeronen/project_1/blob/150226d33492cb8b78e81461f1638a7da0995b85/project_1/project_1/settings.py#L123
 
 The first step in defending against credential stuffing attacks is enforcing good password policy (also, admin should change their password immediately). Django's authentication system can handle validating passwords, preventing users from choosing weak credentials. Password validation is configured in the AUTH_PASSWORD_VALIDATORS setting in the 'settings.py' file. You can add more validators depending on what criteria for password creation you would like to enforce. For example, CommonPasswordValidator compares the given password to 20000 most common passwords, and prevents the use of at least the most obvious or popular passwords. For more on validators see Django docs [6].
@@ -79,6 +83,7 @@ LINK: https://github.com/hjeronen/project_1/blob/150226d33492cb8b78e81461f1638a7
 The application code in the GitHub is currently in development mode, but if the application was run with current settings in production, there would be some serious security concerns. When attempting something that raises an error, such as a badly formatted SQL injection, the application will show very detailed error pages to the user. This should definitely not happen since this traceback gives the attacker valuable information about the structure of the application and its database, enabling them to improve their attacks.
 
 HOW TO FIX:
+
 LINK TO FIX: https://github.com/hjeronen/project_1/blob/150226d33492cb8b78e81461f1638a7da0995b85/project_1/project_1/settings.py#L48
 
 Django shows the error page because the application is run with the setting DEBUG = True. This should of course never happen in production environment, but instead the DEBUG should be set to 'False' (this setting should be defined in the '.env' file). When not running the application in debug mode, the list ALLOWED_HOSTS will need to be defined – here it can be set to '['127.0.0.1', 'localhost']' (or in production environment whatever the host name is). For more on DEBUG see Django docs [9].
