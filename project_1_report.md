@@ -30,14 +30,14 @@ The backend should check that the currently logged in user is the owner of the m
 FLAW 2: A03:2021 – Injection
 LINK: https://github.com/hjeronen/project_1/blob/150226d33492cb8b78e81461f1638a7da0995b85/project_1/poster/views.py#L25
 
-When saving the user's message to the database, the message content is directly attached to the SQL-statement. This enables SQL injection attacks: it is possible to escape the current statement and write a new one that also gets executed. For example, by sending the message (without opening and closing quotes) "hacking your fancy app', '2022-08-17 13:13:27.106930', 2, 1); UPDATE auth_user SET is_superuser=1, is_staff=1 WHERE username='alice'; INSERT INTO poster_message VALUES (NULL, 'alice is the queen now!" alice can change her user role to admin (and flood admin's page with unnecessary messages). This way the attacker could also send messages using someone else's id number, delete the whole database, or wreak all kinds of havoc.
+When saving the user's message to the database, the message content is directly attached to the SQL statement. This enables SQL injection attacks: it is possible to escape the current statement and write a new one that also gets executed. For example, by sending the message (without opening and closing quotes) "hacking your fancy app', '2022-08-17 13:13:27.106930', 2, 1); UPDATE auth_user SET is_superuser=1, is_staff=1 WHERE username='alice'; INSERT INTO poster_message VALUES (NULL, 'alice is the queen now!" alice can change her user role to admin (and flood admin's page with unnecessary messages). This way the attacker could also send messages using someone else's id number, delete the whole database, or wreak all kinds of havoc.
 
 HOW TO FIX:
 
 LINK TO FIX option 1: https://github.com/hjeronen/project_1/blob/150226d33492cb8b78e81461f1638a7da0995b85/project_1/poster/views.py#L35
 LINK TO FIX option 2: https://github.com/hjeronen/project_1/blob/150226d33492cb8b78e81461f1638a7da0995b85/project_1/poster/views.py#L45
 
-There are several ways to fix this issue. For starters, you should use 'execute()' command instead of 'executescript()', since the former allows the execution of only one SQL statement at a time, and therefore you cannot escape the current INSERT statement. SQL injection is still possible, but would only lead to an error (with INSERT statements). To actually prevent injection, you should also use parameterized SQL statements where user input is properly separated from the query. The best practice would be to use Django's Models that have built in protection against SQL-injection. The Message-model is defined in the file 'project_1/poster/models.py'.
+There are several ways to fix this issue. For starters, you should use 'execute()' command instead of 'executescript()', since the former allows the execution of only one SQL statement at a time, and therefore you cannot escape the current INSERT statement. SQL injection is still possible, but would only lead to an error (with INSERT statements). To actually prevent injection, you should also use parameterized SQL statements where user input is properly separated from the query. The best practice would be to use Django's Models that have built in protection against SQL injection. The Message-model is defined in the file 'project_1/poster/models.py'.
 
 ---------
 
@@ -65,7 +65,7 @@ As a side note, the database file containing sensitive user information such as 
 FLAW 4: A07:2021 – Identification and Authentication Failures
 LINK: https://github.com/hjeronen/project_1/blob/150226d33492cb8b78e81461f1638a7da0995b85/project_1/project_1/settings.py#L116
 
-There is a function for registering new users for the messaging application that uses Django's own user registration form, which has some built in safety features against for example injection attacks. However, there are not enough requirements for safe passwords, thus allowing registration with relatively weak passwords and making the application vulnerable for credential stuffing attacks. Also, the pre-existing credentials, for example 'admin:admin', are clearly not up to standard, and are causing a major risk for the application.
+There is a function for registering new users for the messaging application that uses Django's own user registration form, which has some built in safety features against for example injection attacks. However, there are not enough requirements for safe passwords, thus allowing registration with relatively weak passwords and making the application vulnerable for credential stuffing attacks. Also, the existing credentials, for example 'admin:admin', are clearly not up to standard, and are causing a major risk for the application.
 
 HOW TO FIX:
 
